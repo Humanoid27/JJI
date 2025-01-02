@@ -60,7 +60,7 @@ if not getgenv().StingrayLoaded then
 
     if Toggle == "ON" then
         pcall(function()
-            queue_on_teleport('loadstring(game:HttpGet("http://www.stingray-digital.online/script/jji"))()')
+            queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/Humanoid27/JJI/refs/heads/main/JJI"))()')
         end)
     end
 
