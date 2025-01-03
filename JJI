@@ -189,13 +189,13 @@ if not getgenv().StingrayLoaded then
     -- Skill Spam
     task.wait(1)
     repeat
-        Domain("Unlimited Void")
+        Domain("Unequivocal Love")
     until Effects:FindFirstChild("DomainSphere")
 
     task.spawn(function()
         while Mobs:FindFirstChild(Boss) do
-            Skill("Cave Curse Storm")
-            task.wait(1)
+            Skill("Maximum: Jacob's Ladder")
+            task.wait(0.1)
         end
     end)
 
