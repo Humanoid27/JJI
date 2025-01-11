@@ -91,7 +91,7 @@ if not getgenv().StingrayLoaded then
     local QueueSuccess = "False"
     if Toggle == "ON" then
         local Queued, QueueFail = pcall(function()
-            queue_on_teleport('loadstring(game:HttpGet("http://www.stingray-digital.online/script/jji"))()')()
+            queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/Humanoid27/JJI/refs/heads/main/JJI"))()')()
         end)
         if not Queued then
             print("Put this script inside your auto-execution folder:", QueueFail)
