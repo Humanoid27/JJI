@@ -1,6 +1,11 @@
+repeat
+    task.wait()
+until game:IsLoaded()
+
 if not getgenv().StingrayLoaded then
     getgenv().StingrayLoaded = true
     -- Load Configs--
+
     -- Webhook
     pcall(function()
         if getgenv().Webhook then
@@ -10,18 +15,22 @@ if not getgenv().StingrayLoaded then
             getgenv().Webhook = readfile("JJI_Webhook.txt")
         end
     end)
+
     -- Init --
     local StartTime = tick()
     local LocalPlayer = game:GetService("Players").LocalPlayer
+
     repeat
         task.wait()
     until LocalPlayer.Character
     local Root = LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+
     -- Paths & Services --
     local TS = game:GetService("TweenService")
     local RS = game:GetService("ReplicatedStorage")
     local Debris = game:GetService("Debris")
     local Lighting = game:GetService("Lighting")
+
     local Objects = workspace:WaitForChild("Objects")
     local Mobs = Objects:WaitForChild("Mobs")
     local Spawns = Objects:WaitForChild("Spawns")
@@ -29,11 +38,14 @@ if not getgenv().StingrayLoaded then
     local Effects = Objects:WaitForChild("Effects")
     local Destructibles = Objects:WaitForChild("Destructibles")
     local Mission = Objects:WaitForChild("MissionItems")
+
     local LootUI = LocalPlayer.PlayerGui:WaitForChild("Loot")
     local Flip = LootUI:WaitForChild("Frame"):WaitForChild("Flip")
     local Replay = LocalPlayer.PlayerGui:WaitForChild("ReadyScreen"):WaitForChild("Frame"):WaitForChild("Replay")
+
     local ServerRemotes = RS:WaitForChild("Remotes"):WaitForChild("Server")
     local ClientRemotes = RS:WaitForChild("Remotes"):WaitForChild("Client")
+
     -- Consts --
     local Highlight = {"5 Demon Finger", "Maximum Scroll", "Domain Shard", "Iridescent Lotus", "Polished Beckoning Cat",
                        "Sapphire Lotus", "Fortune Gourd", "Demon Finger", "Energy Nature Scroll", "Purified Curse Hand",
@@ -42,6 +54,7 @@ if not getgenv().StingrayLoaded then
                        "Rotten Chains"}
     local Curses = {"Low Level Curse", "Grade 4 Curse", "Grade 3 Curse", "Grade 2 Curse", "Grade 1 Curse",
                     "Special Grade Curse"}
+
     -- Black screen check & Fail safe--
     task.spawn(function()
         task.wait(600)
@@ -50,6 +63,7 @@ if not getgenv().StingrayLoaded then
             task.wait(10)
         end
     end)
+
     if game.PlaceId == 10450270085 then
         task.spawn(function()
             while true do
@@ -70,27 +84,33 @@ if not getgenv().StingrayLoaded then
                 :WaitForChild("QuickStart"):InvokeServer("Investigation", SelectedInvestigation, "Nightmare")
         end
     end
+
     -- Destroy fx --
     Effects.ChildAdded:Connect(function(Child)
         if Child.Name ~= "DeathBall" then
             Debris:AddItem(Child, 0)
         end
     end)
+
     Lighting.ChildAdded:Connect(function(Child)
         Debris:AddItem(Child, 0)
     end)
+
     Destructibles.ChildAdded:Connect(function(Child)
         Debris:AddItem(Child, 0)
     end)
+
     -- Uh, ignore this spaghetti way of determining screen center --
     local MouseTarget = Instance.new("Frame", LocalPlayer.PlayerGui:FindFirstChildWhichIsA("ScreenGui"))
     MouseTarget.Size = UDim2.new(0, 0, 0, 0)
     MouseTarget.Position = UDim2.new(0.5, 0, 0.5, 0)
     MouseTarget.AnchorPoint = Vector2.new(0.5, 0.5)
     local X, Y = MouseTarget.AbsolutePosition.X, MouseTarget.AbsolutePosition.Y
+
     -- UI --
     local UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Manta/Stingray/refs/heads/main/UI"))()
     local MainUI = UI.InitUI()
+
     local Toggle = "ON"
     pcall(function()
         if isfile("JJI_State.txt") then
@@ -99,12 +119,15 @@ if not getgenv().StingrayLoaded then
             writefile("JJI_State.txt", "ON")
         end
     end)
+
     print("QUEUE TOGGLE: " .. Toggle)
+
     if Toggle == "ON" then
         UI.SetState(true)
     else
         UI.SetState(false)
     end
+
     UI.SetMain(function(State)
         if State == 1 then
             Toggle = "ON"
@@ -114,6 +137,7 @@ if not getgenv().StingrayLoaded then
         writefile("JJI_State.txt", Toggle)
         print(readfile("JJI_State.txt"))
     end)
+
     local QueueSuccess = "False"
     if Toggle == "ON" then
         local Queued, QueueFail = pcall(function()
@@ -128,13 +152,16 @@ if not getgenv().StingrayLoaded then
             QueueSuccess = "True"
         end
     end
+
     -- Funcs -- 
     local function Distance(P1, P2)
         return (P1 - P2).Magnitude
     end
+
     local function Closest(P, I, V)
         local Closest_I = nil
         local Closest_D = math.huge
+
         for _, v in ipairs(I) do
             if not V[v] then
                 local D = Distance(P, v.Position)
@@ -144,12 +171,15 @@ if not getgenv().StingrayLoaded then
                 end
             end
         end
+
         return Closest_I, Closest_D
     end
+
     local function GenPath(PStart, I)
         local Path = {}
         local Visited = {}
         local PCurrent = PStart
+
         while #Path < #I do
             local Closest_I, D = Closest(PCurrent, I, Visited)
             if Closest_I then
@@ -165,12 +195,15 @@ if not getgenv().StingrayLoaded then
         end
         return Path
     end
+
     local function Godmode(State)
         ServerRemotes:WaitForChild("Combat"):WaitForChild("ToggleMenu"):FireServer(State)
     end
+
     local function Skill(Name)
         ServerRemotes:WaitForChild("Combat"):WaitForChild("Skill"):FireServer(Name)
     end
+
     local function TweenTo(CF)
         repeat
             task.wait()
@@ -184,6 +217,7 @@ if not getgenv().StingrayLoaded then
         Tween.Completed:Wait()
         task.wait(0.2)
     end
+
     local function Target(Humanoid)
         local s, e = pcall(function()
             ClientRemotes:WaitForChild("GetClosestTarget").OnClientInvoke = function()
@@ -194,6 +228,7 @@ if not getgenv().StingrayLoaded then
             print("Aim Hook Failure: " .. e)
         end
     end
+
     local function IsDead(C)
         if C:FindFirstChild("DeathBall") or (not C) then
             pcall(function()
@@ -203,6 +238,7 @@ if not getgenv().StingrayLoaded then
         end
         return false
     end
+
     local function Kill(C)
         print("Kill Begin")
         local Humanoid = C:WaitForChild("Humanoid", 2)
@@ -223,6 +259,7 @@ if not getgenv().StingrayLoaded then
         Godmode(false)
         task.wait(0.3)
     end
+
     local ChestsCollected = 0
     local function OpenChest()
         game:GetService("ReplicatedStorage").Remotes.Client.CollectChest.OnClientInvoke = function(Chest)
@@ -239,6 +276,7 @@ if not getgenv().StingrayLoaded then
             end
         end
     end
+
     local function Click(Button)
         Button.AnchorPoint = Vector2.new(0.5, 0.5)
         Button.Size = UDim2.new(50, 0, 50, 0)
@@ -256,6 +294,7 @@ if not getgenv().StingrayLoaded then
         VIM:SendMouseButtonEvent(X, Y, 0, false, game, 0)
         task.wait()
     end
+
     local function CheckForBoss()
         for i, v in ipairs(Mobs:GetChildren()) do
             if not table.find(Curses, v.Name) then
@@ -264,6 +303,7 @@ if not getgenv().StingrayLoaded then
         end
         return false
     end
+
     local Items = "| "
     game:GetService("ReplicatedStorage").Remotes.Client.Notify.OnClientEvent:Connect(function(Message)
         local Item = string.match(Message, '">(.-)</font>')
@@ -274,9 +314,11 @@ if not getgenv().StingrayLoaded then
             Items = Items .. Item .. " | "
         end
     end)
+
     -- Main loop
     task.spawn(function()
         while not Replay.Visible do
+
             task.spawn(function()
                 if Drops:FindFirstChild("Chest") then
                     repeat
@@ -284,9 +326,13 @@ if not getgenv().StingrayLoaded then
                         task.wait()
                     until not Drops:FindFirstChild("Chest")
                 end
+
             end)
+
             ClientRemotes:WaitForChild("StorylineDialogueSkip"):FireServer()
+
             pcall(function()
+
                 if Mission:FindFirstChild("CursedObject") then
                     Godmode(false)
                     local T = {}
@@ -342,6 +388,7 @@ if not getgenv().StingrayLoaded then
             end)
             task.wait()
         end
+
         local Sent, Error = pcall(function()
             if getgenv().Webhook then
                 print("Sending webhook")
@@ -375,5 +422,6 @@ if not getgenv().StingrayLoaded then
             Click(Replay)
             task.wait(1)
         end
+
     end)
 end
